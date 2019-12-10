@@ -1,11 +1,16 @@
 import React from "react";
-import {StyleSheet, Text, View, FlatList, Button} from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  FlatList,
+  TouchableHighlight
+} from "react-native";
 
-import {Category} from "../components/Category";
-import {List} from "../components/List";
+import { Category } from "../components/Category";
+import { List } from "../components/List";
 
-
-export const ProductsScreen = props => {
+export const ProductsScreen = ({ inMain }) => {
   const testApi = [
     {
       id: "1",
@@ -135,7 +140,6 @@ export const ProductsScreen = props => {
       price: "5$",
       description: "Any Description"
     },
-
     {
       id: "19",
       category: "Food",
@@ -180,42 +184,58 @@ export const ProductsScreen = props => {
     }
   ];
 
-
   const list = React.createRef();
+  const categoryList = [...new Set(testApi.map(item => item.category))];
 
-  const handlePressButton = (category) =>{
-    let options = {animated:true};
+  const handlePressButton = category => {
+    let options = { animated: true };
 
-    switch(category){
-      case "Clothes" : options = {animated:true, index: 0};
-      break;
-      case "Games" : options = {animated:true, index: 6};
-      break;
-      case "Office" : options = {animated:true, index: 12};
-      break;
-      case "Food" : options = {animated:true, index: 18};
-      break;
-      default : options = {animated:true, index: 0};
+    const getID = (name) => {
+      return testApi.find(obj => {
+        if(obj.category === name){
+          return obj;
+        };
+      }).id-1;
+    };
+
+    switch (category) {
+      case "Clothes":
+        options = {...options, index: getID("Clothes") };
+        break;
+      case "Games":
+        options = {...options, index: getID("Games") };
+        break;
+      case "Office":
+        options = {...options, index: getID("Office") };
+        break;
+      case "Food":
+        options = {...options, index: getID("Food") };
+        break;
+      default:
+        options = {...options, index: 0 };
     }
 
     list.current.scrollToIndex(options);
-  }
+  };
 
   return (
     <View style={styles.wrap}>
-      <View style={styles.headerListWrap}>
-        <View style={styles.headerTextBlock}>
-          <Text style={styles.headerText}>Chose Category</Text>
-        </View>
+
+      <View>
+        <Text style={styles.headerText}>Chose Category</Text>
         <FlatList
-          data={[...new Set(testApi.map(item => item.category))]}
-          renderItem={({item}) => {
-            return <Category category={item} scrollToItem={handlePressButton} />;
+          horizontal
+          data={categoryList}
+          renderItem={({ item }) => {
+            return (
+              <Category category={item} scrollToItem={handlePressButton} />
+            );
           }}
           keyExtractor={item => item}
         />
       </View>
-      <View style={styles.products}>
+
+      <View style={styles.wrap}>
         <FlatList
           data={testApi}
           ref={list}
@@ -232,40 +252,33 @@ export const ProductsScreen = props => {
           keyExtractor={item => item.id}
         />
       </View>
-      <View style={styles.btn}>
-        <Button
-          title="Back in main screen"
-          onPress={() => props.inMain("start")}
-        />
-      </View>
+
+      <TouchableHighlight onPress={() => inMain("start")}>
+        <Text style={styles.btn}>Back in main screen</Text>
+      </TouchableHighlight>
+
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   wrap: {
-    flex: 1,
-    backgroundColor: "white"
-  },
-  headerTextBlock: {
-    alignItems: "center",
-    marginTop: 28
+    flex: 1
   },
   headerText: {
     fontSize: 22,
     backgroundColor: "#FFFACD",
     padding: 5,
-    borderRadius: 5
-  },
-  headerListWrap: {
-    height: 180,
-    backgroundColor: "white"
-  },
-  products: {
-    flex: 1,
-    backgroundColor: "white"
+    borderRadius: 5,
+    marginTop: 25,
+    textAlign: "center"
   },
   btn: {
-    padding: 20
+    paddingVertical: 15,
+    fontSize: 20,
+    color: "white",
+    textAlign: "center",
+    backgroundColor: "#00BFFF",
+    fontWeight: "bold"
   }
 });

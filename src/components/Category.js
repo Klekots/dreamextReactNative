@@ -1,11 +1,11 @@
-import React from 'react';
-import {View, Text, StyleSheet, TouchableHighlight} from 'react-native';
+import React from "react";
+import {View, Text, StyleSheet, TouchableHighlight} from "react-native";
 
-export const Category = props => {
+export const Category = ({category, scrollToItem}) => {
   return (
-    <TouchableHighlight style={styles.category} onPress={()=>props.scrollToItem(props.category)}>
+    <TouchableHighlight style={styles.category} onPress={()=>scrollToItem(category)}>
       <View>
-        <Text style={styles.text}>{props.category}</Text>
+        <Text style={styles.text}>{category}</Text>
       </View>
     </TouchableHighlight>
   )
@@ -14,14 +14,14 @@ export const Category = props => {
 const styles = StyleSheet.create({
   category: {
     borderRadius: 10,
-    backgroundColor: '#66CDAA',
-    marginHorizontal: 10,
-    marginBottom: 10,
-    marginTop: 5,
+    backgroundColor: "#66CDAA",
+    marginHorizontal: 15,
+    marginVertical: 10
   },
   text: {
-    color: 'white',
-    fontSize: 18,
-    padding: 10
+    color: "white",
+    fontSize: 20,
+    padding: 10,
+    fontWeight: "bold"
   }
 })

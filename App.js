@@ -1,13 +1,11 @@
-import React, {useState, useEffect} from 'react';
-import {StyleSheet, Text, View, TouchableHighlight} from 'react-native';
+import React, {useState} from "react";
+import {StyleSheet, Text, View, TouchableHighlight} from "react-native";
 
-import {ProductsScreen} from './src/screens/ProductsScreen';
-import {AfterLoginScreen} from './src/screens/AfterLoginScreen';
-
-import {ModalAuth} from './src/components/ModalAuth';
+import {ProductsScreen} from "./src/screens/ProductsScreen";
+import {AfterLoginScreen} from "./src/screens/AfterLoginScreen";
+import {ModalAuth} from "./src/components/ModalAuth";
 
 export default function App() {
-
   const [activeScreen, setActiveScreen] = useState("start");
   const [vis, setVis] = useState(false);
   const [authStatus, setAuthStatus] = useState(false);
@@ -15,38 +13,23 @@ export default function App() {
   switch(activeScreen){
     case "start" : return (
       <View style={styles.container}>
-
-        <View style={styles.greetingWrap}>
-          <Text style={styles.greetingText}>Hello, check products or log in</Text>
+        <Text style={styles.greetingText}>Hello, check products or log in</Text>
+        <View style={styles.navbar}>  
+          <TouchableHighlight style={styles.tab} onPress={()=>setActiveScreen("products")}>
+            <Text style={styles.text}>Products</Text>
+          </TouchableHighlight>
+          <TouchableHighlight style={styles.tab} onPress={()=>{
+            if(authStatus === true){
+              setVis(false);
+              setActiveScreen("inSystem");
+            } else {
+              setVis(true);
+            }
+          }}>
+          <Text style={styles.text}>{authStatus ? "My profile" : "Log in"}</Text>
+          </TouchableHighlight>
         </View>
-
-
-        <View style={styles.navbar}>
-
-          <View style={styles.btnWrap}>
-            <TouchableHighlight style={styles.btn} onPress={()=>setActiveScreen("products")}>
-              <Text style={styles.text}>Products</Text>
-            </TouchableHighlight>
-          </View>
-
-          <View style={styles.btnWrap}>
-            <TouchableHighlight style={styles.btn} onPress={()=>{
-              if(authStatus === true){
-                setVis(false);
-                setActiveScreen("inSystem");
-              } else {
-                setVis(true);
-              }
-            }}>
-              <Text style={styles.text}>Log In</Text>
-            </TouchableHighlight>
-          </View>
-
-          <View>
-            <ModalAuth auth={setAuthStatus} setVisible={setVis} visible={vis} />
-          </View>
-          
-        </View>
+        <ModalAuth auth={setAuthStatus} setVisible={setVis} visible={vis} />
       </View>
     );
     break;
@@ -55,7 +38,7 @@ export default function App() {
     )
     break;
     case "inSystem" : return (
-      <AfterLoginScreen inMain={setActiveScreen} />
+      <AfterLoginScreen inMain={setActiveScreen} auth={setAuthStatus}/>
     )
     default : return (<Text>Empty Screen</Text>);
     break;
@@ -66,37 +49,28 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#9999CC',
-    justifyContent: 'flex-end'
-  },
-  greetingWrap: {
-    alignSelf: 'center',
-    marginBottom: '60%',
-    backgroundColor: 'silver',
-    borderRadius: 10
+    backgroundColor: "#9999CC",
+    justifyContent: "flex-end"
   },
   greetingText: {
     fontSize: 22,
-    padding: 10
+    padding: 10,
+    fontWeight: "bold",
+    color: "white",
+    marginBottom: "60%"
   },
   navbar: {
-    width: '100%',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row"
   },
-  btnWrap: {
-    width: '45%',
-    margin: '2.5%'
-  },
-  btn: {
-    alignItems: 'center',
-    backgroundColor: '#0033FF',
+  tab: {
+    alignItems: "center",
+    backgroundColor: "#0033FF",
     paddingVertical: 20,
-    borderRadius: 5
+    width: "50%"
   },
   text: {
     fontSize: 21,
-    color: 'white'
+    color: "white",
+    fontWeight: "bold"
   }
 });

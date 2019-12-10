@@ -1,9 +1,9 @@
-import React, {useState, useEffect} from 'react';
-import {View, Text, StyleSheet, TextInput, Button, Modal, Alert, TouchableOpacity} from 'react-native';
+import React, {useState, useEffect} from "react";
+import {View, Text, StyleSheet, TextInput, Button, Modal, Alert, TouchableOpacity} from "react-native";
 
-import {getData} from '../../server/server';
+import {getData} from "../../server/server";
 
-export const ModalAuth = props =>{
+export const ModalAuth = ({auth, setVisible, visible,}) =>{
 
   const [loginValue, setLoginValue] = useState("");
   const [passwordValue, setPasswordValue] = useState("");
@@ -20,9 +20,9 @@ export const ModalAuth = props =>{
   const authorization = () =>{
     getData({login: loginValue, password: passwordValue}).then((res)=>{
       if(res.authorize === "ok"){
-        props.auth(true);
         Alert.alert("Successful login");
-        props.setVisible(false);
+        auth(true);
+        setVisible(false);
       } else {
         Alert.alert("The username or password is incorrect, try again!");
         setLoginValue("");
@@ -32,82 +32,70 @@ export const ModalAuth = props =>{
   }
 
   return(
-    <Modal visible={props.visible} animationType='slide' transparent={false}>
+    <Modal visible={visible} animationType="slide" transparent={false}>
       <View style={styles.modalWrap}>
-        <View>
-          <TextInput
-            style={styles.loginInput}
-            placeholder='Enter login'
-            placeholderTextColor={'white'}
-            autoCapitalize='none'
-            autoCorrect={false}
-            maxLength={16}
-            value={loginValue}
-            onChangeText={text => setLoginValue(text)}
-          />
-        </View>
-        
-        <View>
-          <TextInput
-            style={styles.passwordInput} 
-            placeholder='Enter password'
-            placeholderTextColor={'white'}
-            autoCapitalize='none'
-            autoCorrect={false}
-            maxLength={16}
-            secureTextEntry={true}
-            value={passwordValue}
-            onChangeText={text => setPasswordValue(text)}
-          />
-        </View>
 
-        <View>
-          <TouchableOpacity style={styles.confirm,{display: btnStatus ? "flex": "none"}} onPress={()=>authorization()}>
-            <Text style={styles.confirmText}>Authorization</Text>
-          </TouchableOpacity>
+        <TextInput
+          style={[styles.container, styles.input, styles.inputLogin]}
+          placeholder="Enter login"
+          placeholderTextColor={"white"}
+          autoCapitalize="none"
+          autoCorrect={false}
+          maxLength={16}
+          value={loginValue}
+          onChangeText={text => setLoginValue(text)}
+        />
+
+        <TextInput
+          style={[styles.container, styles.input, styles.inputPassword]} 
+          placeholder="Enter password"
+          placeholderTextColor={"white"}
+          autoCapitalize="none"
+          autoCorrect={false}
+          maxLength={16}
+          secureTextEntry={true}
+          value={passwordValue}
+          onChangeText={text => setPasswordValue(text)}
+        />
+
+        <TouchableOpacity style={styles.confirm,{display: btnStatus ? "flex": "none"}} onPress={()=>authorization()}>
+          <Text style={[styles.container, styles.confirmText]}>Authorization</Text>
+        </TouchableOpacity>
+
+        <View style={styles.container}>
+          <Button title="Back to main screen" onPress={()=>setVisible(false)}/>
         </View>
         
-        <View style={styles.cancel}>
-          <Button title='Back to main screen' onPress={()=>props.setVisible(false)}/>
-        </View>
       </View>
     </Modal>
-
   )
 }
 
 const styles = StyleSheet.create({
+  container: {
+    padding: 10,
+    margin: 10
+  },
   modalWrap: {
     flex: 1,
-    justifyContent: 'center',
-    backgroundColor: '#FFCC66'
+    justifyContent: "center",
+    backgroundColor: "#FFCC66"
   },
-  loginInput: {
-    padding: 10,
-    margin: 10,
+  input: {
     borderWidth: 4,
-    borderColor: 'red',
     borderRadius: 10,
     fontSize: 16
   },
-  passwordInput: {
-    padding: 10,
-    margin: 10,
-    borderWidth: 4,
-    borderColor: 'green',
-    borderRadius: 10,
-    fontSize: 16
+  inputLogin: {
+    borderColor: "red",
+  },
+  inputPassword: {
+    borderColor: "green",
   },
   confirmText: {
     fontSize: 20,
-    padding: 10,
-    margin: 10,
-    textAlign: 'center',
-    backgroundColor: 'green',
+    textAlign: "center",
+    backgroundColor: "green",
     borderRadius: 10
-  },
-  cancel: {
-    margin: 10,
-    padding: 10
   }
 })
